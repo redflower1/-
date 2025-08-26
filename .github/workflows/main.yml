@@ -1,13 +1,10 @@
 name: Build APK
-
 on:
   push:
     branches: [ main ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v4
     
@@ -17,12 +14,30 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     
+    - name: Debug environment
+      working-directory: test002
+      run: |
+        echo "=== Java version ==="
+        java -version
+        echo "=== JAVA_HOME ==="
+        echo $JAVA_HOME
+        echo "=== Environment variables ==="
+        env | grep -E "(GRADLE|JAVA)" || true
+        echo "=== Gradlew file check ==="
+        ls -la gradlew
+        echo "=== First few lines of gradlew ==="
+        head -10 gradlew
+    
     - name: Grant execute permission for gradlew
       run: chmod +x test002/gradlew
     
+    - name: Clean Gradle first
+      working-directory: test002
+      run: ./gradlew clean --no-daemon
+    
     - name: Build with Gradle
       working-directory: test002
-      run: ./gradlew assembleDebug
+      run: ./gradlew assembleDebug --no-daemon --stacktrace
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
