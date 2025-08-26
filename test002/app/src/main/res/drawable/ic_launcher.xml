@@ -4,30 +4,28 @@
     android:height="48dp"
     android:viewportWidth="48"
     android:viewportHeight="48">
-    
+
     <!-- Background -->
     <path android:fillColor="#1A1A2E"
-          android:pathData="M0,0h48v48h-48z"/>
-    
+        android:pathData="M0,0h48v48h-48z"/>
+
     <!-- Toilet body -->
     <path android:fillColor="#8B4513"
-          android:pathData="M12,16 Q12,14 14,14 L34,14 Q36,14 36,16 L36,32 Q36,34 34,34 L14,34 Q12,34 12,32 Z"/>
-    
+        android:pathData="M12,16 Q12,14 14,14 L34,14 Q36,14 36,16 L36,32 Q36,34 34,34 L14,34 Q12,34 12,32 Z"/>
+
     <!-- Toilet seat -->
     <path android:fillColor="#CD853F"
-          android:pathData="M14,16 Q14,15 15,15 L33,15 Q34,15 34,16 L34,20 Q34,21 33,21 L15,21 Q14,21 14,20 Z"/>
-    
-    <!-- Camera lens -->
-    <circle android:fillColor="#2F4F4F"
-            android:cx="38"
-            android:cy="10"
-            android:r="6"/>
-    <circle android:fillColor="#FFFFFF"
-            android:cx="38"
-            android:cy="10"
-            android:r="3"/>
-    
+        android:pathData="M14,16 Q14,15 15,15 L33,15 Q34,15 34,16 L34,20 Q34,21 33,21 L15,21 Q14,21 14,20 Z"/>
+
+    <!-- Camera lens (outer circle) -->
+    <path android:fillColor="#2F4F4F"
+        android:pathData="M38,10 m -6,0 a 6,6 0 1,0 12,0 a 6,6 0 1,0 -12,0"/>
+
+    <!-- Camera lens (inner circle) -->
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M38,10 m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0"/>
+
     <!-- Battle spark -->
     <path android:fillColor="#FFD700"
-          android:pathData="M24,8 L26,12 L30,10 L28,14 L32,16 L28,18 L30,22 L26,20 L24,24 L22,20 L18,22 L20,18 L16,16 L20,14 L18,10 L22,12 Z"/>
+        android:pathData="M24,8 L26,12 L30,10 L28,14 L32,16 L28,18 L30,22 L26,20 L24,24 L22,20 L18,22 L20,18 L16,16 L20,14 L18,10 L22,12 Z"/>
 </vector>
