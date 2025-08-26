@@ -59,6 +59,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+
+    
+    implementation("com.google.android.material:material:1.11.0")
     
     // Game development dependencies
     implementation("androidx.compose.animation:animation:1.5.4")
