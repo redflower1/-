@@ -14,22 +14,11 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     
-    - name: Check and fix gradlew
-      working-directory: test002
-      run: |
-        echo "=== Current gradlew content (first 20 lines) ==="
-        head -20 gradlew
-        echo "=== File encoding check ==="
-        file gradlew
-        echo "=== Converting line endings if needed ==="
-        dos2unix gradlew 2>/dev/null || true
-    
     - name: Grant execute permission for gradlew
       run: chmod +x test002/gradlew
     
     - name: Install Gradle temporarily to fix wrapper
       run: |
-        # 临时安装gradle用于重新生成wrapper
         wget https://services.gradle.org/distributions/gradle-8.0-bin.zip
         unzip -q gradle-8.0-bin.zip
         export PATH=$PWD/gradle-8.0/bin:$PATH
@@ -38,29 +27,27 @@ jobs:
     - name: Fix gradle wrapper
       working-directory: test002
       run: |
-        echo "=== Gradle wrapper properties ==="
-        cat gradle/wrapper/gradle-wrapper.properties
-        echo "=== Testing gradlew ==="
-        if ./gradlew --version; then
-          echo "gradlew working correctly"
-        else
-          echo "gradlew failed, regenerating with downloaded gradle..."
+        if ! ./gradlew --version; then
           gradle wrapper --gradle-version=8.0
           chmod +x gradlew
-          echo "=== Testing regenerated gradlew ==="
-          ./gradlew --version
         fi
+    
+    - name: Fix Material 3 theme compatibility
+      working-directory: test002
+      run: |
+        # 备份原文件
+        cp app/src/main/res/values/themes.xml app/src/main/res/values/themes.xml.backup
+        # 修复Material 3兼容性问题
+        sed -i 's/colorPrimaryVariant/colorPrimary/g' app/src/main/res/values/themes.xml
+        sed -i 's/colorSecondaryVariant/colorTertiary/g' app/src/main/res/values/themes.xml
+        sed -i 's/?attr\/colorPrimaryVariant/?attr\/colorPrimary/g' app/src/main/res/values/themes.xml
+        echo "=== Modified themes.xml ==="
+        cat app/src/main/res/values/themes.xml
     
     - name: Clean and Build
       working-directory: test002
-      env:
-        GRADLE_OPTS: ""
       run: |
-        echo "=== Final gradle version check ==="
-        ./gradlew --version
-        echo "=== Starting clean ==="
         ./gradlew clean --no-daemon
-        echo "=== Starting build ==="
         ./gradlew assembleDebug --no-daemon
     
     - name: Upload APK
