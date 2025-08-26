@@ -14,32 +14,19 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     
-    - name: Check and fix gradlew
-      working-directory: test002
-      run: |
-        echo "=== Current gradlew content (first 20 lines) ==="
-        head -20 gradlew
-        echo "=== File encoding check ==="
-        file gradlew
-        echo "=== Converting line endings if needed ==="
-        dos2unix gradlew 2>/dev/null || true
-    
     - name: Grant execute permission for gradlew
       run: chmod +x test002/gradlew
     
-    - name: Create fresh gradle wrapper (backup solution)
+    - name: Verify Gradle wrapper
       working-directory: test002
       run: |
-        # 如果gradlew有问题，我们重新生成一个
-        if ! ./gradlew --version; then
-          echo "gradlew seems corrupted, regenerating..."
-          gradle wrapper
-        fi
+        echo "=== Gradle wrapper properties ==="
+        cat gradle/wrapper/gradle-wrapper.properties
+        echo "=== Using project's gradlew (should be 8.0) ==="
+        ./gradlew --version
     
     - name: Clean and Build
       working-directory: test002
-      env:
-        GRADLE_OPTS: ""
       run: |
         ./gradlew clean --no-daemon --info
         ./gradlew assembleDebug --no-daemon --info
