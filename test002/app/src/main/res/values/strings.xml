@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Skibidi Toilet Battle</string>
+    
+    <!-- Game UI Strings -->
+    <string name="start_game">开始游戏</string>
+    <string name="settings">设置</string>
+    <string name="exit">退出</string>
+    <string name="single_player">单人模式</string>
+    <string name="multiplayer">多人对战</string>
+    <string name="character_select">选择角色</string>
+    
+    <!-- Character Names -->
+    <string name="toilet_man">马桶人</string>
+    <string name="camera_man">监控人</string>
+    <string name="speaker_man">音响人</string>
+    <string name="tv_man">电视人</string>
+    
+    <!-- Game UI -->
+    <string name="health">生命值</string>
+    <string name="mana">法力值</string>
+    <string name="skill_1">技能1</string>
+    <string name="skill_2">技能2</string>
+    <string name="skill_3">技能3</string>
+    <string name="ultimate">大招</string>
+    <string name="attack">攻击</string>
+    
+    <!-- Game Messages -->
+    <string name="victory">胜利!</string>
+    <string name="defeat">失败!</string>
+    <string name="connecting">连接中...</string>
+    <string name="waiting_for_players">等待其他玩家...</string>
+    <string name="game_starting">游戏即将开始</string>
+    
+    <!-- Settings -->
+    <string name="sound_effects">音效</string>
+    <string name="music">音乐</string>
+    <string name="graphics_quality">画质</string>
+    <string name="controls">操作设置</string>
+</resources>
