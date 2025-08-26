@@ -14,21 +14,50 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     
+    - name: Check and fix gradlew
+      working-directory: test002
+      run: |
+        echo "=== Current gradlew content (first 20 lines) ==="
+        head -20 gradlew
+        echo "=== File encoding check ==="
+        file gradlew
+        echo "=== Converting line endings if needed ==="
+        dos2unix gradlew 2>/dev/null || true
+    
     - name: Grant execute permission for gradlew
       run: chmod +x test002/gradlew
     
-    - name: Verify Gradle wrapper
+    - name: Remove system gradle to avoid conflicts
+      run: |
+        # 移除可能存在的系统gradle，强制使用项目的gradlew
+        sudo rm -f /usr/bin/gradle 2>/dev/null || true
+        which gradle || echo "No system gradle found (good)"
+    
+    - name: Verify project gradle wrapper
       working-directory: test002
       run: |
         echo "=== Gradle wrapper properties ==="
         cat gradle/wrapper/gradle-wrapper.properties
-        echo "=== Using project's gradlew (should be 8.0) ==="
-        ./gradlew --version
+        echo "=== Testing gradlew (should use Gradle 8.0) ==="
+        if ./gradlew --version; then
+          echo "gradlew working correctly"
+        else
+          echo "gradlew failed, will regenerate"
+          # 只有在失败时才重新生成，并指定正确的版本
+          gradle wrapper --gradle-version=8.0
+        fi
     
     - name: Clean and Build
       working-directory: test002
+      env:
+        GRADLE_OPTS: ""
+        PATH: "/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.13-11/x64/bin:$PATH"
       run: |
+        echo "=== Final gradle version check ==="
+        ./gradlew --version
+        echo "=== Starting clean ==="
         ./gradlew clean --no-daemon --info
+        echo "=== Starting build ==="
         ./gradlew assembleDebug --no-daemon --info
     
     - name: Upload APK
