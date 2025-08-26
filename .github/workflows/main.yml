@@ -14,30 +14,35 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     
-    - name: Debug environment
+    - name: Check and fix gradlew
       working-directory: test002
       run: |
-        echo "=== Java version ==="
-        java -version
-        echo "=== JAVA_HOME ==="
-        echo $JAVA_HOME
-        echo "=== Environment variables ==="
-        env | grep -E "(GRADLE|JAVA)" || true
-        echo "=== Gradlew file check ==="
-        ls -la gradlew
-        echo "=== First few lines of gradlew ==="
-        head -10 gradlew
+        echo "=== Current gradlew content (first 20 lines) ==="
+        head -20 gradlew
+        echo "=== File encoding check ==="
+        file gradlew
+        echo "=== Converting line endings if needed ==="
+        dos2unix gradlew 2>/dev/null || true
     
     - name: Grant execute permission for gradlew
       run: chmod +x test002/gradlew
     
-    - name: Clean Gradle first
+    - name: Create fresh gradle wrapper (backup solution)
       working-directory: test002
-      run: ./gradlew clean --no-daemon
+      run: |
+        # 如果gradlew有问题，我们重新生成一个
+        if ! ./gradlew --version; then
+          echo "gradlew seems corrupted, regenerating..."
+          gradle wrapper
+        fi
     
-    - name: Build with Gradle
+    - name: Clean and Build
       working-directory: test002
-      run: ./gradlew assembleDebug --no-daemon --stacktrace
+      env:
+        GRADLE_OPTS: ""
+      run: |
+        ./gradlew clean --no-daemon --info
+        ./gradlew assembleDebug --no-daemon --info
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
