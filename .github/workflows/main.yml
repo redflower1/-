@@ -27,38 +27,41 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x test002/gradlew
     
-    - name: Remove system gradle to avoid conflicts
+    - name: Install Gradle temporarily to fix wrapper
       run: |
-        # 移除可能存在的系统gradle，强制使用项目的gradlew
-        sudo rm -f /usr/bin/gradle 2>/dev/null || true
-        which gradle || echo "No system gradle found (good)"
+        # 临时安装gradle用于重新生成wrapper
+        wget https://services.gradle.org/distributions/gradle-8.0-bin.zip
+        unzip -q gradle-8.0-bin.zip
+        export PATH=$PWD/gradle-8.0/bin:$PATH
+        echo "PATH=$PWD/gradle-8.0/bin:$PATH" >> $GITHUB_ENV
     
-    - name: Verify project gradle wrapper
+    - name: Fix gradle wrapper
       working-directory: test002
       run: |
         echo "=== Gradle wrapper properties ==="
         cat gradle/wrapper/gradle-wrapper.properties
-        echo "=== Testing gradlew (should use Gradle 8.0) ==="
+        echo "=== Testing gradlew ==="
         if ./gradlew --version; then
           echo "gradlew working correctly"
         else
-          echo "gradlew failed, will regenerate"
-          # 只有在失败时才重新生成，并指定正确的版本
+          echo "gradlew failed, regenerating with downloaded gradle..."
           gradle wrapper --gradle-version=8.0
+          chmod +x gradlew
+          echo "=== Testing regenerated gradlew ==="
+          ./gradlew --version
         fi
     
     - name: Clean and Build
       working-directory: test002
       env:
         GRADLE_OPTS: ""
-        PATH: "/opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.13-11/x64/bin:$PATH"
       run: |
         echo "=== Final gradle version check ==="
         ./gradlew --version
         echo "=== Starting clean ==="
-        ./gradlew clean --no-daemon --info
+        ./gradlew clean --no-daemon
         echo "=== Starting build ==="
-        ./gradlew assembleDebug --no-daemon --info
+        ./gradlew assembleDebug --no-daemon
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
