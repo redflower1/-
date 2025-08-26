@@ -35,12 +35,14 @@ jobs:
     - name: Fix Material 3 theme compatibility
       working-directory: test002
       run: |
-        # 备份原文件
-        cp app/src/main/res/values/themes.xml app/src/main/res/values/themes.xml.backup
+        # 备份原文件到res目录外
+        cp app/src/main/res/values/themes.xml /tmp/themes.xml.backup
         # 修复Material 3兼容性问题
         sed -i 's/colorPrimaryVariant/colorPrimary/g' app/src/main/res/values/themes.xml
         sed -i 's/colorSecondaryVariant/colorTertiary/g' app/src/main/res/values/themes.xml
         sed -i 's/?attr\/colorPrimaryVariant/?attr\/colorPrimary/g' app/src/main/res/values/themes.xml
+        # 移除可能存在的备份文件
+        rm -f app/src/main/res/values/*.backup
         echo "=== Modified themes.xml ==="
         cat app/src/main/res/values/themes.xml
     
